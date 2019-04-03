@@ -4,15 +4,15 @@ import re
 import numpy as np
 import math
 #path = 'indeed_bdd.csv'
-data=pd.read_csv("indeed_bdd.csv", sep = ",", encoding="utf-8")
+data=pd.read_csv("indeedmongodb.csv")
 
 #%%
 #drop columns not used
-dropping=['Metier_x','Titre2','Nom2','Metier_y']
+dropping=['_id']
 data.drop(dropping, axis=1, inplace= True)
 
 #Str .UPPER Desctop & Contrat
-data.Descpost=data.Descpost.str.upper()
+data.Descposte=data.Descposte.str.upper()
 data.Contrat=data.Contrat.str.upper()
 
 #Calculate Minimum Salary by years/month/week/day/hour
@@ -92,10 +92,10 @@ def contrat_clean_desc(contrat):
         pass
 
 #Extract Contract from description 
-def contrat_clean(descpost,contrat):
+def contrat_clean(Descposte,contrat):
     try:
-        if re.findall(r'\bCDI\b|\bCDD\b|\bSTAGE\b|\bALTERNANCE\b|\bTEMPS PLEIN\b|\bTEMPS PARTIEL\b|\bFREELANCE\b|\bINDEPENDANT\b|\bINDÉPENDANT\b',descpost) and math.isnan(contrat):
-            return  ' , '.join(re.findall(r'\bCDI\b|\bCDD\b|\bSTAGE\b|\bALTERNANCE\b|\bTEMPS PLEIN\b|\bTEMPS PARTIEL\b|\bFREELANCE\b|\bINDEPENDANT\b|\bINDÉPENDANT\b',descpost))
+        if re.findall(r'\bCDI\b|\bCDD\b|\bSTAGE\b|\bALTERNANCE\b|\bTEMPS PLEIN\b|\bTEMPS PARTIEL\b|\bFREELANCE\b|\bINDEPENDANT\b|\bINDÉPENDANT\b',Descposte) and math.isnan(contrat):
+            return  ' , '.join(re.findall(r'\bCDI\b|\bCDD\b|\bSTAGE\b|\bALTERNANCE\b|\bTEMPS PLEIN\b|\bTEMPS PARTIEL\b|\bFREELANCE\b|\bINDEPENDANT\b|\bINDÉPENDANT\b',Descposte))
         else :
             return contrat
     except:
@@ -122,28 +122,28 @@ def contrat_clean_CDD(contrat):
         pass
 
 #Extract kind diploma from Description 
-def diplome(descpost):
+def diplome(Descposte):
     try:
-        if re.findall('BAC\s*\+\s*\d|BTS|DUT|LICENCE|MASTER|DEUG|M1|M2',descpost):
-            return  ' , '.join(re.findall('BAC\s*\+\s*\d|BTS|DUT|LICENCE|MASTER|DEUG|M1|M2',descpost))
+        if re.findall('BAC\s*\+\s*\d|BTS|DUT|LICENCE|MASTER|DEUG|M1|M2',Descposte):
+            return  ' , '.join(re.findall('BAC\s*\+\s*\d|BTS|DUT|LICENCE|MASTER|DEUG|M1|M2',Descposte))
         else : 
             return np.nan
     except:
         pass
 #Extract kind experience from Description 
-def experience(descpost):
+def experience(Descposte):
     try :
-        if re.findall(r'\bEXPERIENCE.*\d\s?ANS|\bEXPERIENCE.*\d\s?AN|\bEXPÉRIENCE.*\d\s?ANS|\bEXPÉRIENCE.*\d\s?AN|\bEXPERIENCE.*\d\s?YEARS|\bEXPERIENCE.*\d\s?YEAR|\bEXPERIENCE.*\d\s?Y',descpost):
-            return float(' - '.join(re.findall(r'\d',' , '.join(re.findall(r'\bEXPERIENCE.*\d\s?ANS|\bEXPERIENCE.*\d\s?AN|\bEXPÉRIENCE.*\d\s?ANS|\bEXPÉRIENCE.*\d\s?AN|\bEXPERIENCE.*\d\s?YEARS|\bEXPERIENCE.*\d\s?YEAR|\bEXPERIENCE.*\d\s?Y',descpost))))[0])
+        if re.findall(r'\bEXPERIENCE.*\d\s?ANS|\bEXPERIENCE.*\d\s?AN|\bEXPÉRIENCE.*\d\s?ANS|\bEXPÉRIENCE.*\d\s?AN|\bEXPERIENCE.*\d\s?YEARS|\bEXPERIENCE.*\d\s?YEAR|\bEXPERIENCE.*\d\s?Y',Descposte):
+            return float(' - '.join(re.findall(r'\d',' , '.join(re.findall(r'\bEXPERIENCE.*\d\s?ANS|\bEXPERIENCE.*\d\s?AN|\bEXPÉRIENCE.*\d\s?ANS|\bEXPÉRIENCE.*\d\s?AN|\bEXPERIENCE.*\d\s?YEARS|\bEXPERIENCE.*\d\s?YEAR|\bEXPERIENCE.*\d\s?Y',Descposte))))[0])
         else :
             return np.nan
     except:
         pass
 #Extract kind language from Description 
-def langages(descpost):
+def langages(Descposte):
     try :
-        if re.findall(r"PYTHON|[\s,.;]C[\s*,.;!?]|[\s,.;]R[\s*,.;!?]|C\+\+|C\s?#|VBA|MATLAB|SPARK|GITHUB|AIRFLOW|POSTGRES|EC2|EMR|RDS|REDSHIFT|AZURE|AWS|JAVA|HTML|CSS|JS|PHP|SQL|RUBY|SAS|TCL|PERL|ORACLE|MYSQL|MONGODB|REDIS|NEO4J|TWITTER|LDAP|FILE|HADOOP|DB2|SYBASE|AS400|ACCESS|FLASK|BOOTSTRAP",descpost):
-            return ' , '.join(set(' - '.join(re.findall(r"PYTHON|[\s,.;]C[\s*,.;!?]|[\s,.;]R[\s*,.;!?]|C\+\+|C\s?#|VBA|MATLAB|SPARK|GITHUB|AIRFLOW|POSTGRES|EC2|EMR|RDS|REDSHIFT|AZURE|AWS|JAVA|HTML|CSS|JS|PHP|SQL|RUBY|SAS|TCL|PERL|ORACLE|MYSQL|MONGODB|REDIS|NEO4J|TWITTER|LDAP|FILE|HADOOP|DB2|SYBASE|AS400|ACCESS|FLASK|BOOTSTRAP",descpost)).split())).replace(' , -','').replace('- , ','')
+        if re.findall(r"PYTHON|[\s,.;]C[\s*,.;!?]|[\s,.;]R[\s*,.;!?]|C\+\+|C\s?#|VBA|MATLAB|SPARK|GITHUB|AIRFLOW|POSTGRES|EC2|EMR|RDS|REDSHIFT|AZURE|AWS|JAVA|HTML|CSS|JS|PHP|SQL|RUBY|SAS|TCL|PERL|ORACLE|MYSQL|MONGODB|REDIS|NEO4J|TWITTER|LDAP|FILE|HADOOP|DB2|SYBASE|AS400|ACCESS|FLASK|BOOTSTRAP",Descposte):
+            return ' , '.join(set(' - '.join(re.findall(r"PYTHON|[\s,.;]C[\s*,.;!?]|[\s,.;]R[\s*,.;!?]|C\+\+|C\s?#|VBA|MATLAB|SPARK|GITHUB|AIRFLOW|POSTGRES|EC2|EMR|RDS|REDSHIFT|AZURE|AWS|JAVA|HTML|CSS|JS|PHP|SQL|RUBY|SAS|TCL|PERL|ORACLE|MYSQL|MONGODB|REDIS|NEO4J|TWITTER|LDAP|FILE|HADOOP|DB2|SYBASE|AS400|ACCESS|FLASK|BOOTSTRAP",Descposte)).split())).replace(' , -','').replace('- , ','')
         else :
             return np.nan
     except:
@@ -151,10 +151,10 @@ def langages(descpost):
     
 ##Extract level experience from Description 
 
-def niveau_desc(descpost):
+def niveau_desc(Descposte):
     try :
-        if re.findall(r"JUNIOR|DÉBUTANT|DEBUTANT|SENIOR|EXPÉRIMENTÉ|EXPERIMENTE|EXPERIENCED",descpost):
-            s = ' - '.join(re.findall(r"JUNIOR|DÉBUTANT|DEBUTANT|SENIOR|EXPÉRIMENTÉ|EXPERIMENTE|EXPERIENCED",descpost))
+        if re.findall(r"JUNIOR|DÉBUTANT|DEBUTANT|SENIOR|EXPÉRIMENTÉ|EXPERIMENTE|EXPERIENCED",Descposte):
+            s = ' - '.join(re.findall(r"JUNIOR|DÉBUTANT|DEBUTANT|SENIOR|EXPÉRIMENTÉ|EXPERIMENTE|EXPERIENCED",Descposte))
             return ' , '.join(set(s.split())).replace(' , -','').replace('- , ','')
         else :
             return np.nan
@@ -191,11 +191,11 @@ data['salaire_mean']=data.apply(lambda row : get_salaire_moyen_annuel(row['Salai
 
 
 data['Contrat']=data.apply(lambda row : contrat_clean_desc(row['Contrat']), axis=1)
-data['Contrat']=data.apply(lambda row : contrat_clean(row['Descpost'],row['Contrat']), axis=1)
+data['Contrat']=data.apply(lambda row : contrat_clean(row['Descposte'],row['Contrat']), axis=1)
 data['Contrat']=data.apply(lambda row : contrat_clean_CDI(row['Contrat']), axis=1)
 data['Contrat']=data.apply(lambda row : contrat_clean_CDD(row['Contrat']), axis=1)
 
-data['Diplome']=data.apply(lambda row : diplome(row['Descpost']), axis=1)
+data['Diplome']=data.apply(lambda row : diplome(row['Descposte']), axis=1)
 
 
 # Label-encoder for Diploma 
@@ -204,7 +204,7 @@ dip = ['BAC\s*\+\s*2','BAC\s*\+\s*3','BAC\s*\+\s*4','BAC\s*\+\s*5','BTS','DUT','
 for v in dip :
     data[v] = list(map(int, data["Diplome"].str.contains(v,regex=True, na=False)))
     
-data['Langages']=data.apply(lambda row : langages(row['Descpost']), axis=1)
+data['Langages']=data.apply(lambda row : langages(row['Descposte']), axis=1)
 
 # Label encoder for languages
 lang = ["PYTHON","C\+\+","C\s?#","VBA","MATLAB","SPARK","GITHUB","AIRFLOW","POSTGRES","EC2","EMR","RDS","REDSHIFT","AZURE","AWS","JAVA","HTML","CSS","JS","PHP","SQL","RUBY","SAS","TCL","PERL","ORACLE","MYSQL","MONGODB","REDIS","NEO4J","TWITTER","LDAP","FILE","HADOOP","DB2","SYBASE","AS400","ACCESS","FLASK","BOOTSTRAP"]
@@ -213,13 +213,13 @@ for v in lang :
     data[v] = list(map(int, data["Langages"].str.contains(v,regex=True, na=False)))
 
 # specific label encoder for C & R cause one letter.
-data['C'] = list(map(int, data["Descpost"].str.contains('[\s,.;](C)[\s*,.;!?]',regex=True, na=False)))
-data['R'] = list(map(int, data["Descpost"].str.contains('[\s,.;](R)[\s*,.;!?]',regex=True, na=False)))
+data['C'] = list(map(int, data["Descposte"].str.contains('[\s,.;](C)[\s*,.;!?]',regex=True, na=False)))
+data['R'] = list(map(int, data["Descposte"].str.contains('[\s,.;](R)[\s*,.;!?]',regex=True, na=False)))
 
 #apply fonction for all rows
-data['AnneesExperience']=data.apply(lambda row : experience(row['Descpost']), axis=1)
+data['AnneesExperience']=data.apply(lambda row : experience(row['Descposte']), axis=1)
 data['Niveau_annees_exp']=data.apply(lambda row : niveau_annees_exp(row['AnneesExperience']), axis=1)
-data['Niveau_desc']=data.apply(lambda row : niveau_desc(row['Descpost']), axis=1)
+data['Niveau_desc']=data.apply(lambda row : niveau_desc(row['Descposte']), axis=1)
 data['Niveau']=data.apply(lambda row : niveau(row['Niveau_desc'],row['Niveau_annees_exp']), axis=1)
 
 
@@ -282,6 +282,7 @@ from sklearn.preprocessing import OneHotEncoder, LabelBinarizer, StandardScaler,
 data['salaire_label'] = LabelBinarizer().fit_transform(data[['salaire_label']])
 data['Niveau_label'] = LabelEncoder().fit_transform(data[['Niveau_label']])
 
+#%%
 
 cols = ['NoteGlobale', 'Équilibre_vie_professionnelle_personnelle',
        'Salaire_Avantages_sociaux', 'Sécurité_emploi_Évolution_carrière',
@@ -290,8 +291,8 @@ for c in cols:
     data[c].fillna(-999,inplace=True)
 data['Avis'].fillna(0,inplace=True)
 
-
-data.dropna(subset=["Descpost"], axis=0, inplace=True)
+#%%
+data.dropna(subset=["Descposte"], axis=0, inplace=True)
 
 
 
@@ -300,15 +301,15 @@ data.dropna(subset=["Descpost"], axis=0, inplace=True)
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem.snowball import FrenchStemmer
 fs =FrenchStemmer()
-data['Descpost']=[fs.stem(k) for k in data['Descpost']]
+data['Descposte']=[fs.stem(k) for k in data['Descposte']]
 
 
 tfidf=TfidfVectorizer()
-tfidf.fit_transform(data['Descpost'])
+tfidf.fit_transform(data['Descposte'])
 
 from sklearn.preprocessing import StandardScaler 
 
-cvec_table  = pd.DataFrame(tfidf.fit_transform(data['Descpost']).todense(),
+cvec_table  = pd.DataFrame(tfidf.fit_transform(data['Descposte']).todense(),
              columns=tfidf.get_feature_names())
 
 
@@ -316,7 +317,7 @@ cvec_table  = pd.DataFrame(tfidf.fit_transform(data['Descpost']).todense(),
 data= data.reset_index()
 
 
-include = data.columns.drop(['Titre', 'Nom', 'Adresse', 'Salaire', 'Contrat', 'Descpost', 'Date', 'salaire_min','salaire_mean', 'salaire_max', 'Diplome',  'Langages' ,'AnneesExperience','Niveau_annees_exp', 'Niveau_desc', 'Niveau', 'NoteGlobale', 'Équilibre_vie_professionnelle_personnelle'
+include = data.columns.drop(['Titre', 'Nom', 'Adresse', 'Salaire', 'Contrat', 'Descposte', 'Date', 'salaire_min','salaire_mean', 'salaire_max', 'Diplome',  'Langages' ,'AnneesExperience','Niveau_annees_exp', 'Niveau_desc', 'Niveau', 'NoteGlobale', 'Équilibre_vie_professionnelle_personnelle'
                              , 'Sécurité_emploi_Évolution_carrière', 'Management', "Culture_d'entreprise"])
 new_df = pd.merge(data[include],cvec_table,right_index=True, left_index=True)
 
@@ -334,18 +335,18 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 model = SVC()
 model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
+y_pred_svc = model.predict(X_test)
 
-accuracy =  accuracy_score(y_test, y_pred) * 100
-print(accuracy)
+accuracy_svc =  accuracy_score(y_test, y_pred_svc) * 100
+print(accuracy_svc)
 
 #%% Random Forest
 
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-model = RandomForestRegressor()
+model = RandomForestClassifier()
 model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
+y_pred_rfc = model.predict(X_test)
 
-accuracy =  accuracy_score(y_test, y_pred) * 100
-print(accuracy)
+accuracy_rfc =  accuracy_score(y_test, y_pred_rfc) * 100
+print(accuracy_rfc)
